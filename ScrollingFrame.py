@@ -2,8 +2,6 @@ import tkinter
 from tkinter import *
 from tkinter import font
 
-chars_fitted = 1+10+10+10+1
-
 def contentize_string(text, width, text_font: font.Font):
     left_text = f" :: {text}"
 
@@ -32,8 +30,13 @@ class ScrollingFrame:
         self.box = list_box
         self.font = font.Font(font=self.box.cget("font"))
         self.box.update()
-        self.width: int = self.box.winfo_width()
+        self.width: int = self.box.winfo_width() - 28 # -16 for the scroll bar
+        self.absolute_width: int = self.box.winfo_width()
 
+        self.scroll_wheel = Scrollbar(list_box, command=self.box.yview)
+        self.scroll_wheel.pack(side=RIGHT, fill=Y)
+
+        self.box.config(yscrollcommand=self.scroll_wheel.set)
         self.box.bind('<Double-1>', lambda event: self.double_clicked(command))
         self.box.bind("<Button-1>", self.select_element)
         self.box.bind("<B1-Motion>", self.shift_element)
@@ -46,7 +49,7 @@ class ScrollingFrame:
     def mouse_move(self, event):
         if 30 > event.x > 0:
             self.root.config(cursor="fleur")
-        elif event.x > 450-18*2:
+        elif self.width > event.x > self.width-self.font.measure('X')*1.5:
             self.root.config(cursor="right_ptr")
         else:
             self.root.config(cursor="arrow")
@@ -61,7 +64,7 @@ class ScrollingFrame:
     def select_element(self, event:Event):
         if event.x<30:
             self.selected = self.box.nearest(event.y)
-        if event.x > 450-18*2:
+        if self.width > event.x > self.width-self.font.measure('X')*1.5:
             self.box.delete(self.box.nearest(event.y))
     def shift_element(self, event):
         selected = self.selected

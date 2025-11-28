@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import  ttk
 
-def option_box(question, options, values):
+def option_box(question, options, values, wrap=1, direction='vertical'):
     box = Toplevel(width=300, height=300)
     box.grid_columnconfigure(0, weight=1)
     box.grid_rowconfigure(0, weight=1)
@@ -13,8 +13,14 @@ def option_box(question, options, values):
 
     i = 1
     for option in options:
+        filling = int((i-1)/wrap)
+        wrapping = (i-1)%wrap
+
+        column = wrapping if direction == 'vertical' else filling
+        row = (filling if direction == 'vertical' else wrapping)+1
+
         widget = Radiobutton(box, text=option, variable=answer, value=values[i-1], font=('Arial', 12))
-        widget.grid(row=i, column=0)
+        widget.grid(row=row, column=column)
         if i == 1:
             widget.select()
         i += 1

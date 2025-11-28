@@ -1,26 +1,19 @@
+from time import sleep
 import pyautogui
-keys = [r'\t', r'\n', r'\r', ' ', '!', '"', '#', '$', '%', '&', "'", '(',
-')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7',
-'8', '9', ':', ';', '<', '=', '>', '?', '@', '[', r'\\', ']', '^', '_', '`',
-'a', 'b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~',
-'accept', 'add', 'alt', 'altleft', 'altright', 'apps', 'backspace',
-'browserback', 'browserfavorites', 'browserforward', 'browserhome',
-'browserrefresh', 'browsersearch', 'browserstop', 'capslock', 'clear',
-'convert', 'ctrl', 'ctrlleft', 'ctrlright', 'decimal', 'del', 'delete',
-'divide', 'down', 'end', 'enter', 'esc', 'escape', 'execute', 'f1', 'f10',
-'f11', 'f12', 'f13', 'f14', 'f15', 'f16', 'f17', 'f18', 'f19', 'f2', 'f20',
-'f21', 'f22', 'f23', 'f24', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9',
-'final', 'fn', 'hanguel', 'hangul', 'hanja', 'help', 'home', 'insert', 'junja',
-'kana', 'kanji', 'launchapp1', 'launchapp2', 'launchmail',
-'launchmediaselect', 'left', 'modechange', 'multiply', 'nexttrack',
-'nonconvert', 'num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6',
-'num7', 'num8', 'num9', 'numlock', 'pagedown', 'pageup', 'pause', 'pgdn',
-'pgup', 'playpause', 'prevtrack', 'print', 'printscreen', 'prntscrn',
-'prtsc', 'prtscr', 'return', 'right', 'scrolllock', 'select', 'separator',
-'shift', 'shiftleft', 'shiftright', 'sleep', 'space', 'stop', 'subtract', 'tab',
-'up', 'volumedown', 'volumemute', 'volumeup', 'win', 'winleft', 'winright', 'yen',
-'command', 'option', 'optionleft', 'optionright']
+from pymouse import PyMouse
+from pykeyboard import PyKeyboard
+import pyKey
+from pyKey import key_dict
+
+pyauto_keys = [(repr(key).lstrip("'").rstrip("'")) if key != "'" else repr(key).lstrip('"').rstrip('"') for key in pyautogui.KEYBOARD_KEYS if key != ' ']
+
+mouse = PyMouse()
+keyboard = PyKeyboard()
+
+attributes = dir(keyboard)
+pyuserinput_keys = [key for key in pyauto_keys if len(key) == 1] + [key.replace('_key', '') for key in attributes if key.endswith('_key')]
+
+pykeys = [key for key in key_dict.win_keys.keys()]
 
 # MOVE TO
 def move_to_settings(full_string):
@@ -63,7 +56,7 @@ def write(full_string):
 
 #PRESS
 def press_settings(full_string):
-    return {'Prompt': 'Choose which button to press.', 'Values':keys, 'Wrap':19, 'Direction': 'horizontal'}
+    return {'Prompt': 'Choose which button to press.', 'Values':pyauto_keys, 'Wrap':18, 'Direction': 'horizontal'}
 
 def edit_press(string):
     return f"Press ({string})"
@@ -72,6 +65,48 @@ def press(full_string):
     text = full_string[7:-1]
     pyautogui.press(text)
 
+#WAIT
+def wait_settings(full_string):
+    text = full_string[6:-1]
+    return {'Prompt': 'Type the amount of seconds to wait.', 'InitialValue': text, 'Error': 'Error: You have to type a number, no letters or symbols!'}
+
+def edit_wait(string):
+    try:
+        float(string)
+        return f'Wait ({string})'
+    except ValueError:
+        return False
+
+def wait(full_string):
+    text = full_string[6:-1]
+    sleep(float(text))
+
+# KEYDOWN
+def keydown_settings(full_string):
+    return {'Prompt': 'Choose which button to press.', 'Values':pykeys, 'Wrap':18, 'Direction': 'horizontal'}
+
+def edit_keydown(string):
+    return f"Keydown ({string})"
+
+def keydown(full_string):
+    text = full_string[9:-1]
+    pyKey.pressKey(text)
+    #keyboard.press_key(text if len(text) == 1 else keyboard.__getattribute__(text))
+    #pyautogui.keyDown(text)
+
+# KEYUP
+def keyup_settings(full_string):
+    return {'Prompt': 'Choose which button to press.', 'Values':pykeys, 'Wrap':18, 'Direction': 'horizontal'}
+
+def edit_keyup(string):
+    return f"Keyup ({string})"
+
+def keyup(full_string):
+    text = full_string[7:-1]
+    pyKey.releaseKey(text)
+    #keyboard.release_key(text if len(text) == 1 else keyboard.__getattribute__(text))
+    # pyautogui.keyUp(text)
+
 # -- EVERYTHING ELSE --
 everything = {
     'Mouse move to ': {'OptionText': 'Mouse move to (x,y)', 'DefaultValue': 'Mouse move to (500,500)', 'Settings': move_to_settings, 'Edit': edit_move_to, 'Command': move_to},
@@ -79,6 +114,9 @@ everything = {
     'Right Click': {'Command': pyautogui.rightClick},
     'Write ': {'OptionText': 'Write (text)', 'DefaultValue': 'Write (Hello World!)', 'Settings': write_settings, 'Edit':edit_write, 'Command': write},
     'Press ': {'OptionText': 'Press (button)', 'DefaultValue': 'Press (enter)', 'Settings': press_settings, 'Edit': edit_press, 'Command': press},
+    'Wait ': {'OptionText': 'Wait (seconds)', 'DefaultValue': 'Wait (1)', 'Settings': wait_settings, 'Edit': edit_wait, 'Command': wait},
+    'Keydown ': {'OptionText': 'Keydown (button)', 'DefaultValue': 'Keydown (SPACEBAR)', 'Settings': keydown_settings, 'Edit': edit_keydown, 'Command': keydown},
+    'Keyup ': {'OptionText': 'Keyup (button)', 'DefaultValue': 'Keyup (SPACEBAR)', 'Settings': keyup_settings, 'Edit': edit_keyup, 'Command': keyup},
 }
 
 def follow_command(command:str):

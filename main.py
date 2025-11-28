@@ -15,8 +15,8 @@ window.resizable(True,True)
 left = ttk.Frame(window,width=25,height=500)
 left.grid(column=0,row=0, rowspan=4) # Change this if grid Y size changes
 
-options = [(everything[command]['OptionText'] if 'OptionText' in everything[command] else command)  for command in everything.keys()]
-values = [(everything[command]['DefaultValue'] if 'DefaultValue' in everything[command] else command)  for command in everything.keys()]
+options = [(everything[command]['OptionText'] if 'OptionText' in everything[command] else command) for command in everything.keys()]
+values = [(everything[command]['DefaultValue'] if 'DefaultValue' in everything[command] else command) for command in everything.keys()]
 
 # -- INPUT FUNCTIONS -- #
 def add_command():

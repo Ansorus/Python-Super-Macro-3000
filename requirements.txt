@@ -1,0 +1,2 @@
+PyAutoGUI~=0.9.54
+pyKey~=0.2

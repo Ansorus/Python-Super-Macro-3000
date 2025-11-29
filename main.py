@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk, Button, Listbox, SINGLE
 from tkinter import ttk
 from ScrollingFrame import ScrollingFrame
 from OptionBox import option_box

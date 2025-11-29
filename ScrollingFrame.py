@@ -1,5 +1,5 @@
 import tkinter
-from tkinter import *
+from tkinter import Tk, Scrollbar, Listbox, Event, RIGHT, Y
 from tkinter import font
 
 def contentize_string(text, width, text_font: font.Font):

@@ -1,18 +1,9 @@
 from time import sleep
 import pyautogui
-from pymouse import PyMouse
-from pykeyboard import PyKeyboard
 import pyKey
 from pyKey import key_dict
 
 pyauto_keys = [(repr(key).lstrip("'").rstrip("'")) if key != "'" else repr(key).lstrip('"').rstrip('"') for key in pyautogui.KEYBOARD_KEYS if key != ' ']
-
-mouse = PyMouse()
-keyboard = PyKeyboard()
-
-attributes = dir(keyboard)
-pyuserinput_keys = [key for key in pyauto_keys if len(key) == 1] + [key.replace('_key', '') for key in attributes if key.endswith('_key')]
-
 pykeys = [key for key in key_dict.win_keys.keys()]
 
 # MOVE TO
@@ -107,6 +98,14 @@ def keyup(full_string):
     #keyboard.release_key(text if len(text) == 1 else keyboard.__getattribute__(text))
     # pyautogui.keyUp(text)
 
+# Mouse1 Down
+
+# Mouse1 Up
+
+# Mouse2 Down
+
+# Mouse2 Up
+
 # -- EVERYTHING ELSE --
 everything = {
     'Mouse move to ': {'OptionText': 'Mouse move to (x,y)', 'DefaultValue': 'Mouse move to (500,500)', 'Settings': move_to_settings, 'Edit': edit_move_to, 'Command': move_to},
@@ -117,6 +116,10 @@ everything = {
     'Wait ': {'OptionText': 'Wait (seconds)', 'DefaultValue': 'Wait (1)', 'Settings': wait_settings, 'Edit': edit_wait, 'Command': wait},
     'Keydown ': {'OptionText': 'Keydown (button)', 'DefaultValue': 'Keydown (SPACEBAR)', 'Settings': keydown_settings, 'Edit': edit_keydown, 'Command': keydown},
     'Keyup ': {'OptionText': 'Keyup (button)', 'DefaultValue': 'Keyup (SPACEBAR)', 'Settings': keyup_settings, 'Edit': edit_keyup, 'Command': keyup},
+    'Mouse1 Down': {'Command': lambda: pyautogui.mouseDown(button='left')},
+    'Mouse1 Up': {'Command': lambda: pyautogui.mouseUp(button='left')},
+    'Mouse2 Down': {'Command': lambda: pyautogui.mouseDown(button='right')},
+    'Mouse2 Up': {'Command': lambda: pyautogui.mouseUp(button='right')}
 }
 
 def follow_command(command:str):
